@@ -5,11 +5,12 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['tel',  'password']
+        fields = ['tel',  'password', 'status']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         tel = validated_data['tel']
+        status = validated_data['status']
         if User.objects.filter(tel=tel).exists():
             raise serializers.ValidationError('Un utilisateur avec ce numéro de téléphone existe déjà.')
 

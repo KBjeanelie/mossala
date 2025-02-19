@@ -3,10 +3,12 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 from authentication.serializer import CustomTokenObtainPairSerializer, RegisterSerializer
-from .models import User
+from .models import User, UserStatus
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import logout
 
-# Create your views here.
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -14,12 +16,15 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
     def create(self, request, *args, **kwargs):
+        role = UserStatus.objects.get(status=request.data['status'].lower())
+        request.data['status'] = [role.id]
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         refresh = RefreshToken.for_user(user)
         return Response({
-            'user': UserSerializer(user, context=self.get_serializer_context()).data,
+            'user': RegisterSerializer(user, context=self.get_serializer_context()).data,
+            'message': 'Utilisateur créé avec succès.',
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }, status=status.HTTP_201_CREATED)
@@ -29,3 +34,26 @@ class RegisterView(generics.CreateAPIView):
 class CustomTokenObtainPairView(TokenObtainPairView):
     permission_classes = (AllowAny,)
     serializer_class = CustomTokenObtainPairSerializer
+
+
+class LogoutAPIView(generics.GenericAPIView):
+    """
+    Endpoint pour déconnecter un utilisateur en blacklistant son token d'accès.
+    L'utilisateur doit être authentifié.
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get_serializer_class(self):
+        return None
+
+    def post(self, request, *args, **kwargs):
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            logout(request)
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except KeyError:
+            return Response({"detail": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
+        except (TokenError, InvalidToken):
+            return Response({"detail": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)

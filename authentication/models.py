@@ -22,13 +22,15 @@ class UserManager(BaseUserManager):
     def create_user(self, tel, password=None, **extra_fields):
         if not tel:
             raise ValueError('The Tel must be set')
-        tel = is_valid_phone_number(tel)
+        
+        if not is_valid_phone_number(tel):
+            raise ValueError('The Tel is not valid')
         user = self.model(tel=tel, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password=None, **extra_fields):
+    def create_superuser(self, tel, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
@@ -37,13 +39,13 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self.create_user(email, password, **extra_fields)
+        return self.create_user(tel, password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=50, unique=True, null=False, blank=False, verbose_name='Nom d\'utilisateur')
+    username = models.CharField(max_length=50, unique=True, null=True, blank=True, verbose_name='Nom d\'utilisateur')
     tel = models.CharField(max_length=15, unique=True, null=False, blank=False, verbose_name='Numéro de téléphone')
-    email = models.EmailField(max_length=255, unique=True, null=False, blank=False, verbose_name='Email')
+    email = models.EmailField(max_length=255, unique=True, null=True, blank=True, verbose_name='Email')
     email_verified = models.BooleanField(default=False, verbose_name='Email vérifié')
     date_joined = models.DateTimeField(auto_now_add=True, verbose_name='Date d\'inscription')
     last_login = models.DateTimeField(auto_now=True, verbose_name='Dernière connexion')
