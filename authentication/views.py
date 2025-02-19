@@ -2,7 +2,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
-from authentication.serializer import CustomTokenObtainPairSerializer, RegisterSerializer
+from authentication.serializer import CustomTokenObtainPairSerializer, RegisterSerializer, UserSerializer
 from .models import User, UserStatus
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
@@ -57,3 +57,12 @@ class LogoutAPIView(generics.GenericAPIView):
             return Response({"detail": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
         except (TokenError, InvalidToken):
             return Response({"detail": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetCurrentUserInfo(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        return Response(self.serializer_class(user).data)
