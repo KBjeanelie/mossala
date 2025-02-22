@@ -34,6 +34,26 @@ class RegisterView(generics.CreateAPIView):
 class CustomTokenObtainPairView(TokenObtainPairView):
     permission_classes = (AllowAny,)
     serializer_class = CustomTokenObtainPairSerializer
+    
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+
+        if response.status_code == 200:
+            user = User.objects.get(tel=request.data["tel"])
+
+            # Récupérer l'IP
+            user_ip = self.get_client_ip(request)
+            user.last_ip = user_ip
+
+            # Récupérer la localisation
+            user.last_location = self.get_location(user_ip)
+
+            # Récupérer l'IMEI envoyé par le client
+            user.imei = request.data.get("imei", None)  # Vérifier si l'IMEI est envoyé
+
+            user.save()
+
+        return response
 
 
 class LogoutAPIView(generics.GenericAPIView):
