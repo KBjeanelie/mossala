@@ -4,6 +4,37 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Permis
 
 from mossala.utils import is_valid_phone_number
 
+
+class District(models.Model):
+    name = models.CharField(max_length=50, unique=True, null=False, blank=False, verbose_name='Nom du district')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        verbose_name = 'Arrondissement'
+        verbose_name_plural = 'Arrondissements'
+        db_table = 'arrondissement'
+        ordering = ['name']
+
+class Quater(models.Model):
+    name = models.CharField(max_length=50, unique=True, null=False, blank=False, verbose_name='Nom du quartier')
+    district = models.ForeignKey(District, on_delete=models.CASCADE, verbose_name='Arrondissement')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        verbose_name = 'Quartier'
+        verbose_name_plural = 'Quartiers'
+        db_table = 'quartier'
+        ordering = ['name']
+
+
 # Create your models here.
 class UserStatus(models.Model):
     status = models.CharField(max_length=50, unique=True, null=False, blank=False, verbose_name='Status')
@@ -42,13 +73,40 @@ class UserManager(BaseUserManager):
         return self.create_user(tel, password, **extra_fields)
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+
+class UserProfile(models.Model):
+    lastname = models.CharField(max_length=50, verbose_name="Nom", null=True, blank=True)
+    firstname = models.CharField(max_length=50, verbose_name="Prénom", null=True, blank=True)
+    nickname = models.CharField(max_length=50, verbose_name="Surnom", null=True, blank=True)
+    gender = models.CharField(max_length=10,  verbose_name="Sexe", null=True, blank=True)
+    nationality = models.CharField(max_length=50, verbose_name="Nationalité", null=True, blank=True)
+    birthplace = models.CharField(max_length=100, verbose_name="Lieu de naissance", null=True, blank=True)
+    address = models.CharField(max_length=255, verbose_name="Adresse", null=True, blank=True)
+    date_of_birth = models.DateField(verbose_name="Date de naissance", null=True, blank=True)
+    photo = models.ImageField(upload_to='profiles/', verbose_name="Photo", null=True, blank=True)
+    skype = models.CharField(max_length=50, verbose_name="Skype", null=True, blank=True)
+    gmail = models.EmailField(verbose_name="Gmail", null=True, blank=True)
+    discord = models.URLField(verbose_name="Discord", null=True, blank=True)
+    whatsapp = models.CharField(max_length=20, verbose_name="WhatsApp", null=True, blank=True)
+    facebook = models.URLField(verbose_name="Facebook", null=True, blank=True)
+    twitter = models.URLField(verbose_name="Twitter", null=True, blank=True)
+    instagram = models.URLField(verbose_name="Instagram", null=True, blank=True)
+    linkedin = models.URLField(verbose_name="LinkedIn", null=True, blank=True)
+    phone_work = models.CharField(max_length=20, verbose_name="Téléphone professionnel", null=True, blank=True)
+    profession = models.CharField(max_length=50, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+class User(AbstractBaseUser, PermissionsMixin, UserProfile):
     username = models.CharField(max_length=50, unique=True, null=True, blank=True, verbose_name='Nom d\'utilisateur')
     tel = models.CharField(max_length=15, unique=True, null=False, blank=False, verbose_name='Numéro de téléphone')
     email = models.EmailField(max_length=255, unique=True, null=True, blank=True, verbose_name='Email')
     email_verified = models.BooleanField(default=False, verbose_name='Email vérifié')
     date_joined = models.DateTimeField(auto_now_add=True, verbose_name='Date d\'inscription')
     last_login = models.DateTimeField(auto_now=True, verbose_name='Dernière connexion')
+    user_quater = models.ForeignKey(Quater, on_delete=models.SET_NULL, null=True, blank=True)
     last_ip = models.GenericIPAddressField(null=True, blank=True)
     last_location = models.CharField(max_length=255, null=True, blank=True)
     imei = models.CharField(max_length=50, null=True, blank=True)
