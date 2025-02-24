@@ -2,6 +2,8 @@ from django.contrib import admin
 
 from backend.models.domain_manager import Domain, Job, Specialty
 
+per_page = 15
+
 @admin.register(Domain)
 class DomainAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'created_at', 'updated_at')
@@ -11,6 +13,7 @@ class DomainAdmin(admin.ModelAdmin):
     ordering = ['name']
     save_on_top = True
     readonly_fields = ['created_at', 'updated_at']
+    list_per_page = per_page
 
 
 @admin.register(Specialty)
@@ -22,6 +25,7 @@ class SpecialtyAdmin(admin.ModelAdmin):
     ordering = ['name']
     save_on_top = True
     readonly_fields = ['created_at', 'updated_at']
+    list_per_page = per_page
 
 
 @admin.register(Job)
@@ -33,3 +37,4 @@ class JobAdmin(admin.ModelAdmin):
     ordering = ['title']
     save_on_top = True
     readonly_fields = ['created_at', 'updated_at']
+    list_per_page = per_page
