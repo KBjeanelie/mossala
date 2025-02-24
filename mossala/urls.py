@@ -44,6 +44,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('admin/', admin.site.urls),
+    path('api/', include('api.urls')),
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/user/current/', GetCurrentUserInfo.as_view(), name='current_user'),
