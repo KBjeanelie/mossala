@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,14 +56,28 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.gzip.GZipMiddleware',  # Compression des réponses
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    # MIDDLEWARE PERSONNALISÉ
+    'backend.middlewares.redirect_url.RedirectIfNotAuthenticatedMiddleware',
+    'backend.middlewares.request_logg.RequestLoggingMiddleware',
+    'backend.middlewares.sql_injection.SQLInjectionMiddleware'
 ]
 
 AUTH_USER_MODEL = 'authentication.User'
 
 ROOT_URLCONF = 'mossala.urls'
+
+LOGIN_URL = '/api/login/'
+
+SECURE_SSL_REDIRECT = False
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 
 TEMPLATES = [
     {
@@ -96,6 +111,10 @@ DATABASES = {
 REST_FRAMEWORK = {
   'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',  
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        
     ),
 }
 
@@ -200,42 +219,27 @@ DEFAULT_FROM_EMAIL = 'your_email@gmail.com'
 EMAIL_SUBJECT_PREFIX = '[Eliminu App] '
 
 
-# # Jazzmin settings
-# JAZZMIN_SETTINGS = {
-#     "site_title": "Eliminu App",
-#     "site_header": "Eliminu App",
-#     "site_logo": "/static/img/logo.png",
-#     "menu_icon_classes": "material-icons",
-#     "show_sidebar_menu": True,
-#     "show_submenu_icons": True,
-#     "hide_sidebar_collapse_icon": False,
-#     "navigation_expanded": True,
-#     "collapse_sidebar_on_hover": False,
-#     "footer_text": "© 2023 Eliminu App. Tous droits réservés.",
-#     "header_background_color": "#37474f",
-#     "header_background_image": "",
-#     "header_background_image_opacity": 0.8,
-#     "header_background_image_size": "cover",
-#     "header_background_image_position":"",
-#     "header_dropdown_background_color": "#37474f",
-#     "body_background_color": "#f5f5f5",
-#     "form_background_color": "#ffffff",
-#     "form_border_color": "#e9e9e9",
-#     "form_border_radius": 3,
-#     "form_box_shadow": "0 1px 2px rgba(0, 0, 0, 0.05)",
-#     "form_field_background_color": "#ffffff",
-#     "form_field_border_color": "#cccccc",
-#     "form_field_border_radius": 3,
-#     "form_field_box_shadow": "0 1px 2px rgba(0, 0, 0, 0)",
-#     "form_field_error_color": "#b00020",
-#     "form_field_focus_background_color": "#e0e0e0",
-#     "form_field_focus_border_color": "#82b1ff",
-#     "form_button_background_color": "#4caf50",
-#     "form_button_border_color": "#4caf50",
-#     "form_button_text_color": "#ffffff",
-#     "form_button_border_radius": 3,
-#     "form_button_box_shadow": "0 1px 2px rgba(0, 0, 0, 0.05)",
-#     "form_button_focus_background_color": "#45a049",
-#     "form_button_focus_border_color": "#398439",
+# Jazzmin settings
+JAZZMIN_SETTINGS = {
+    "site_title": "Mon API Admin",
+    "site_header": "Gestion API",
+    "welcome_sign": "Bienvenue sur l’interface Admin de Mon API",
+    "copyright": "© 2025 Mon API",
+    
+    # Icônes FontAwesome (optionnel)
+    "icons": {
+        "auth.User": "fas fa-user",
+        "auth.Group": "fas fa-users",
+    },
 
-# }
+    # Personnalisation des menus
+    "order_with_respect_to": ["auth", "myapp"],
+
+    # Liens rapides
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "related_modal_active": True,
+
+    # Personnalisation des couleurs
+    "theme": "flatly",  # Autres thèmes : cerulean, cosmo, cyborg, darkly, journal, litera, lumen, lux, materia, minty, pulse, sandstone, simplex, slate, solar, spacelab, superhero, united, yeti.
+}

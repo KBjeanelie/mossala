@@ -8,7 +8,7 @@ from backend.models.project_manager import Project, ApplyProject, ProjectEvaluat
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    permission_classes = [IsAuthenticated]
+    
 
     @action(detail=True, methods=['post'])
     def assign_freelancer(self, request, pk=None):
@@ -32,9 +32,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
 class ApplyProjectViewSet(viewsets.ModelViewSet):
     queryset = ApplyProject.objects.all()
     serializer_class = ApplyProjectSerializer
-    permission_classes = [IsAuthenticated]
+    
 
 class ProjectEvaluationViewSet(viewsets.ModelViewSet):
     queryset = ProjectEvaluation.objects.all()
     serializer_class = ProjectEvaluationSerializer
-    permission_classes = [IsAuthenticated]
+    

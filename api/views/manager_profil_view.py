@@ -16,14 +16,14 @@ class UserEducationViewSet(viewsets.ModelViewSet):
 class UserLanguageViewSet(viewsets.ModelViewSet):
     queryset = UserLanguage.objects.all()
     serializer_class = UserLanguageSerializer
-    permission_classes = [IsAuthenticated]
+    
 
 class UserPortfolioViewSet(viewsets.ModelViewSet):
     queryset = UserPortfolio.objects.all()
     serializer_class = UserPortfolioSerializer
-    permission_classes = [IsAuthenticated]
+    
 
 class UserRecommendationViewSet(viewsets.ModelViewSet):
     queryset = UserRecommendation.objects.all()
     serializer_class = UserRecommendationSerializer
-    permission_classes = [IsAuthenticated]
+    
