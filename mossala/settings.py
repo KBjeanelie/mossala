@@ -241,5 +241,5 @@ JAZZMIN_SETTINGS = {
     "related_modal_active": True,
 
     # Personnalisation des couleurs
-    "theme": "flatly",  # Autres thèmes : cerulean, cosmo, cyborg, darkly, journal, litera, lumen, lux, materia, minty, pulse, sandstone, simplex, slate, solar, spacelab, superhero, united, yeti.
+    "theme": "cyborg",
 }

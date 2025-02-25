@@ -1,5 +1,6 @@
 from django.db import models
 from authentication.models import User
+from backend.models.domain_manager import Specialty
 
 class Project(models.Model):
     name = models.CharField(max_length=255, verbose_name='Nom du projet')
@@ -8,6 +9,7 @@ class Project(models.Model):
     end_date = models.DateField(null=True, blank=True, verbose_name='Date de fin')
     status = models.CharField(max_length=50, choices=[('ongoing', 'En cours'), ('completed', 'Terminé')], verbose_name='Statut')
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_projects', verbose_name='Propriétaire')
+    specialty = models.ManyToManyField(Specialty, verbose_name='Profil recherché', blank=True)
     assigned_freelancer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_projects', verbose_name='Freelance attribué')
     is_closed = models.BooleanField(default=False, verbose_name='Clôturé')
     

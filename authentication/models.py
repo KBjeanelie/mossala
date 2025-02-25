@@ -84,6 +84,8 @@ class UserProfile(models.Model):
     address = models.CharField(max_length=255, verbose_name="Adresse", null=True, blank=True)
     date_of_birth = models.DateField(verbose_name="Date de naissance", null=True, blank=True)
     photo = models.ImageField(upload_to='profiles/', verbose_name="Photo", null=True, blank=True)
+    competence = models.ManyToManyField('backend.Specialty', verbose_name='Competence', blank=True)
+    job = models.ManyToManyField('backend.Job', verbose_name='Profession', blank=True)
     skype = models.CharField(max_length=50, verbose_name="Skype", null=True, blank=True)
     gmail = models.EmailField(verbose_name="Gmail", null=True, blank=True)
     discord = models.URLField(verbose_name="Discord", null=True, blank=True)

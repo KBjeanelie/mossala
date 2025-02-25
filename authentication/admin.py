@@ -37,7 +37,7 @@ class UserAdmin(admin.ModelAdmin):
         }),
         ('Status', { 'fields': ('status','email_verified', 'is_staff','is_active','is_superuser', 'is_verified')}),
         ('Information Général', {
-            'fields': ('photo', 'lastname', 'firstname','nickname', 'gender', 'nationality', 'birthplace', 'date_of_birth',)}),
+            'fields': ('photo', 'lastname', 'firstname','nickname', 'gender', 'nationality', 'birthplace', 'date_of_birth', 'job', 'competence')}),
         ('Réseaux sociaux', {
             'fields': ('skype', 'gmail', 'discord', 'facebook', 'linkedin','instagram', 'twitter', 'whatsapp')}),
         ('Création et modification', {'fields': ('date_joined', 'updated_at')}),
