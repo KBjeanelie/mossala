@@ -9,6 +9,13 @@ class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     
+    @action(detail=False, methods=['get'], url_path='by-specialty')
+    def list_by_specialty(self, request):
+        user = request.user
+        specialties = user.specialty.all()
+        projects = Project.objects.filter(specialty__in=specialties).distinct()
+        serializer = self.get_serializer(projects, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=['post'])
     def assign_freelancer(self, request, pk=None):
@@ -33,8 +40,22 @@ class ApplyProjectViewSet(viewsets.ModelViewSet):
     queryset = ApplyProject.objects.all()
     serializer_class = ApplyProjectSerializer
     
+    @action(detail=False, methods=['get'], url_path='by-specialty')
+    def list_by_specialty(self, request):
+        user = request.user
+        specialties = user.specialty.all()
+        projects = Project.objects.filter(specialty__in=specialties).distinct()
+        serializer = self.get_serializer(projects, many=True)
+        return Response(serializer.data)
 
 class ProjectEvaluationViewSet(viewsets.ModelViewSet):
     queryset = ProjectEvaluation.objects.all()
     serializer_class = ProjectEvaluationSerializer
     
+    @action(detail=False, methods=['get'], url_path='by-specialty')
+    def list_by_specialty(self, request):
+        user = request.user
+        specialties = user.specialty.all()
+        projects = Project.objects.filter(specialty__in=specialties).distinct()
+        serializer = self.get_serializer(projects, many=True)
+        return Response(serializer.data)
