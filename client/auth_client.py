@@ -1,6 +1,6 @@
 import requests
 
-BASE_URL = "http://127.0.0.1:8000/api"
+BASE_URL = "http://192.168.1.81:8000/api"
 
 def login(tel, password):
     url = f"{BASE_URL}/login/"

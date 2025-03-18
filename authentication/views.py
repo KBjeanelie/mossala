@@ -1,3 +1,4 @@
+import requests
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -54,6 +55,23 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             user.save()
 
         return response
+    
+    def get_client_ip(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
+    
+    def get_location(self, ip):
+        try:
+            response = requests.get(f"http://ip-api.com/json/{ip}")
+            data = response.json()
+            return data["city"]
+        except:
+            return None
+    
 
 
 class LogoutAPIView(generics.GenericAPIView):

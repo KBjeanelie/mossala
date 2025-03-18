@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-optt67@po%u)l7yfx+bbuf04y@jzweb_el+y^=@^%if&78ys#n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -62,7 +62,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
     # MIDDLEWARE PERSONNALISÉ
-    'backend.middlewares.redirect_url.RedirectIfNotAuthenticatedMiddleware',
+    #'backend.middlewares.redirect_url.RedirectIfNotAuthenticatedMiddleware',
     'backend.middlewares.request_logg.RequestLoggingMiddleware',
     'backend.middlewares.sql_injection.SQLInjectionMiddleware'
 ]
