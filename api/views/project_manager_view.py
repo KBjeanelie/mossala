@@ -8,6 +8,7 @@ from backend.models.project_manager import Project, ApplyProject, ProjectEvaluat
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticated]
     
     @action(detail=False, methods=['get'], url_path='by-specialty')
     def list_by_specialty(self, request):
@@ -39,6 +40,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 class ApplyProjectViewSet(viewsets.ModelViewSet):
     queryset = ApplyProject.objects.all()
     serializer_class = ApplyProjectSerializer
+    permission_classes = [IsAuthenticated]
     
     @action(detail=False, methods=['get'], url_path='by-specialty')
     def list_by_specialty(self, request):
@@ -51,7 +53,7 @@ class ApplyProjectViewSet(viewsets.ModelViewSet):
 class ProjectEvaluationViewSet(viewsets.ModelViewSet):
     queryset = ProjectEvaluation.objects.all()
     serializer_class = ProjectEvaluationSerializer
-    
+    permission_classes = [IsAuthenticated]
     @action(detail=False, methods=['get'], url_path='by-specialty')
     def list_by_specialty(self, request):
         user = request.user
