@@ -1,13 +1,14 @@
 import requests
 
-BASE_URL = "http://127.0.0.1:8000/api"
+BASE_URL = "http://192.168.1.81:8000/api"
 
-def signup(tel, password, role):
+def signup(tel, password):
     url = f"{BASE_URL}/register/"
     data = {
+        "lastname": "ITOUA",
+        "firstname": "Yannick",
         "tel": tel,
         "password": password,
-        "status": role
     }
     response = requests.post(url, json=data)
 
@@ -17,5 +18,5 @@ def signup(tel, password, role):
     return response.json() if response.status_code == 201 else None
 
 if __name__ == "__main__":
-    new_user = signup("064838270", "user123", "client")
+    new_user = signup("064838070", "user123",)
     print("Réponse du serveur :", new_user)

@@ -5,14 +5,13 @@ from backend.models.domain_manager import Specialty
 class Project(models.Model):
     name = models.CharField(max_length=255, verbose_name='Nom du projet')
     description = models.TextField(verbose_name='Description')
-    start_date = models.DateField(verbose_name='Date de début')
-    end_date = models.DateField(null=True, blank=True, verbose_name='Date de fin')
-    status = models.CharField(max_length=50, choices=[('ongoing', 'En cours'), ('completed', 'Terminé')], verbose_name='Statut')
+    amount = models.FloatField(verbose_name='Montant', default=1000)
+    adress = models.CharField(max_length=255, verbose_name='Adresse', blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_projects', verbose_name='Propriétaire')
     specialty = models.ManyToManyField(Specialty, verbose_name='Profil recherché', blank=True)
     assigned_freelancer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_projects', verbose_name='Freelance attribué')
     is_closed = models.BooleanField(default=False, verbose_name='Clôturé')
-    
+    created_at = models.DateField(auto_now_add=True, verbose_name='Date de début')
     def __str__(self):
         return self.name
     
@@ -23,13 +22,28 @@ class Project(models.Model):
     class Meta:
         verbose_name = 'Projet'
         verbose_name_plural = 'Projets'
-        ordering = ['-start_date']
+        ordering = ['-created_at']
+
+class ProjectImage(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='images', verbose_name='Projet')
+    image = models.ImageField(upload_to='project_images/', verbose_name='Image')
+    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='Date d\'ajout')
+
+    def __str__(self):
+        return f"Image for project: {self.project.name}"
+
+    class Meta:
+        verbose_name = 'Image de projet'
+        verbose_name_plural = 'Images de projet'
+        ordering = ['-uploaded_at']
 
 class ApplyProject(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applications', verbose_name='Utilisateur')
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='applications', verbose_name='Projet')
+    amount = models.FloatField(verbose_name='Montant', default=1000)
+    duration = models.CharField(max_length=255, verbose_name='Durée', blank=True, null=True)
+    description = models.TextField(verbose_name='Description', blank=True, null=True)
     application_date = models.DateField(auto_now_add=True, verbose_name='Date de candidature')
-    status = models.CharField(max_length=50, choices=[('pending', 'En attente'), ('accepted', 'Accepté'), ('rejected', 'Rejeté')], verbose_name='Statut')
 
     def __str__(self):
         return f"{self.user} - {self.project}"
@@ -38,6 +52,7 @@ class ApplyProject(models.Model):
         verbose_name = 'Candidature'
         verbose_name_plural = 'Candidatures'
         ordering = ['-application_date']
+
 
 class ProjectEvaluation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='evaluations', verbose_name='Utilisateur')

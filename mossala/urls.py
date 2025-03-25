@@ -25,7 +25,7 @@ from rest_framework_simplejwt.views import (
 )
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from authentication.views import CustomTokenObtainPairView, GetCurrentUserInfo, LogoutAPIView, RegisterView
+from authentication.views import CustomTokenObtainPairView, GetCurrentUserInfo, LogoutAPIView, QuaterListView, RegisterView, WorkerDetailView, WorkerListView
 from mossala import settings
 
 schema_view = get_schema_view(
@@ -47,7 +47,10 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/quaters/', QuaterListView.as_view(), name='quaters-list'),
     path('api/user/current/', GetCurrentUserInfo.as_view(), name='current_user'),
+    path('api/workers/', WorkerListView.as_view(), name='worker-list'),
+    path('api/workers/<int:pk>/', WorkerDetailView.as_view(), name='worker-detail'),
     path('api/logout/', LogoutAPIView.as_view(), name='logout'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

@@ -1,21 +1,25 @@
-from authentication.models import User, UserStatus
+from authentication.models import Quater, User, UserStatus
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['tel',  'password', 'status']
+        fields = ['lastname','firstname','tel', 'address',  'password']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         tel = validated_data['tel']
-        status = validated_data['status']
         if User.objects.filter(tel=tel).exists():
             raise serializers.ValidationError('Un utilisateur avec ce numéro de téléphone existe déjà.')
 
         user = User.objects.create_user(
             tel=tel,
+            lastname=validated_data['lastname'],
+            firstname=validated_data['firstname'],
+            address=validated_data.get('address', ''),
+            is_staff=False,
+            is_superuser=False,
             password=validated_data['password']
         )
         return user
@@ -102,3 +106,24 @@ class UserSerializer(serializers.ModelSerializer):
             if not UserStatus.objects.filter(name=role).exists():
                 raise serializers.ValidationError(f"Le rôle '{role}' n'existe pas.")
         return value
+
+class WorkerSerializer(serializers.ModelSerializer):
+    competence = serializers.StringRelatedField(many=True)
+    job = serializers.StringRelatedField(many=True)
+    
+    class Meta:
+        model = User
+        fields = [
+           'id','username','tel','email','email_verified', 'address','date_joined','last_login','is_active', 'phone_work',
+           'photo', 'lastname', 'firstname','nickname', 'gender', 'nationality', 'birthplace', 'date_of_birth', 'job', 'competence',
+           'skype', 'gmail', 'discord', 'facebook', 'linkedin','instagram', 'twitter', 'whatsapp',
+        ]
+        extra_kwargs = {
+            'date_joined': {'read_only': True},
+        }
+
+class QuaterSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Quater
+        fields = ['id', 'name']

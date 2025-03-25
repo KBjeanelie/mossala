@@ -3,8 +3,8 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
-from authentication.serializer import CustomTokenObtainPairSerializer, RegisterSerializer, UserSerializer
-from .models import User, UserStatus
+from authentication.serializer import CustomTokenObtainPairSerializer, QuaterSerializer, RegisterSerializer, UserSerializer, WorkerSerializer
+from .models import Quater, User, UserStatus
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework.permissions import IsAuthenticated
@@ -17,8 +17,6 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
     def create(self, request, *args, **kwargs):
-        role = UserStatus.objects.get(status=request.data['status'].lower())
-        request.data['status'] = [role.id]
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
@@ -104,3 +102,24 @@ class GetCurrentUserInfo(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         user = request.user
         return Response(self.serializer_class(user).data)
+
+
+class WorkerListView(generics.ListAPIView):
+    serializer_class = WorkerSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return User.objects.filter(is_staff=False, is_superuser=False).order_by("-date_joined")
+
+
+class WorkerDetailView(generics.RetrieveAPIView):
+    """
+    Vue pour afficher les détails d'un worker spécifique.
+    """
+    serializer_class = WorkerSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+
+class QuaterListView(generics.ListAPIView):
+    serializer_class = QuaterSerializer
+    queryset = Quater.objects.all()
