@@ -1,8 +1,8 @@
 from rest_framework.routers import DefaultRouter
 from api.views.domain_manager_views import DomainViewSet, SpecialtyViewSet, JobViewSet
 from api.views.project_manager_view import ApplyProjectViewSet, ProjectEvaluationViewSet, ProjectViewSet
-from api.views.user_manager_view import CurrentAssignedUserProjectViewSet, CurrentUserEducationViewSet, CurrentUserExperienceViewSet, CurrentUserProjectViewSet
-from api.views.worker_view import AssignedUserProjectViewSet, UserEducationViewSet, UserExperienceViewSet, UserProjectViewSet
+from api.views.user_manager_view import CurrentAssignedUserProjectViewSet, CurrentUserEducationViewSet, CurrentUserExperienceViewSet, CurrentUserProjectViewSet, CurrentUserRealisationViewSet
+from api.views.worker_view import AssignedUserProjectViewSet, UserEducationViewSet, UserExperienceViewSet, UserProjectViewSet, UserRealisationViewSet
 
 router = DefaultRouter()
 router.register(r'domain', DomainViewSet, basename='domain')
@@ -11,12 +11,14 @@ router.register(r'specialty', SpecialtyViewSet, basename='specialty')
 ### User Manager
 ##############################################################################################################################
 router.register(r'user-experiences', CurrentUserExperienceViewSet, basename='user-experience')
+router.register(r'user-realisations', CurrentUserRealisationViewSet, basename='user-realisation')
 router.register(r'user-educations', CurrentUserEducationViewSet, basename='user-education')
 router.register(r'user-assigned-project', CurrentAssignedUserProjectViewSet, basename='user-assigned-project')
 router.register(r'user-created-project', CurrentUserProjectViewSet, basename='user-created-project')
 ##############################################################################################################################
 ### Worker manager
 ##############################################################################################################################
+router.register(r'worker-realisations', UserRealisationViewSet, basename='worker-realisation')
 router.register(r'worker-experiences/(?P<user_id>\d+)', UserExperienceViewSet, basename='worker-experience')
 router.register(r'worker-educations/(?P<user_id>\d+)', UserEducationViewSet, basename='worker-education')
 router.register(r'worker-assigned-project/(?P<user_id>\d+)', AssignedUserProjectViewSet, basename='worker-assigned-project')

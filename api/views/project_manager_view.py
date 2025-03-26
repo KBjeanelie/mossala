@@ -76,6 +76,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(projects, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class ApplyProjectViewSet(viewsets.ModelViewSet):
     queryset = ApplyProject.objects.all()
     serializer_class = ApplyProjectSerializer
@@ -88,7 +89,9 @@ class ApplyProjectViewSet(viewsets.ModelViewSet):
         projects = Project.objects.filter(specialty__in=specialties).distinct()
         serializer = self.get_serializer(projects, many=True)
         return Response(serializer.data)
-
+    
+    
+    
 class ProjectEvaluationViewSet(viewsets.ModelViewSet):
     queryset = ProjectEvaluation.objects.all()
     serializer_class = ProjectEvaluationSerializer

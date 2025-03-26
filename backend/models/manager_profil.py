@@ -36,7 +36,6 @@ class UserEducation(models.Model):
         ordering = ['-start_date']
 
 
-
 class UserLanguage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='languages')
     language = models.CharField(max_length=255, verbose_name='Langue')
@@ -80,4 +79,20 @@ class UserRecommendation(models.Model):
     class Meta:
         verbose_name = 'Recommendation'
         verbose_name_plural = 'Recommendations'
+        ordering = ['-date']
+
+
+class UserRealisation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='realisations')
+    realisation_name = models.CharField(max_length=255, verbose_name='Nom de la réalisation')
+    description = models.TextField(verbose_name='Description')
+    date = models.DateField(verbose_name='Date de la réalisation')
+    image = models.ImageField(upload_to='realisation_images/', verbose_name='Image')
+    
+    def __str__(self):
+        return self.realisation_name
+    
+    class Meta:
+        verbose_name = 'Réalisation'
+        verbose_name_plural = 'Réalisations'
         ordering = ['-date']

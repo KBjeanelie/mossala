@@ -25,6 +25,9 @@ from rest_framework_simplejwt.views import (
 )
 from rest_framework_simplejwt.views import TokenRefreshView
 
+from api.views.app_report_view import FeedBackFromUserCreateView, WarningFromUserCreateView
+from api.views.user_manager_view import CurrentUserProjectStatsView
+from api.views.worker_view import UserProjectStatsView
 from authentication.views import CustomTokenObtainPairView, GetCurrentUserInfo, LogoutAPIView, QuaterListView, RegisterView, WorkerDetailView, WorkerListView
 from mossala import settings
 
@@ -45,6 +48,10 @@ urlpatterns = [
     path('', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
+    path('api/user/user-project-stats/', CurrentUserProjectStatsView.as_view(), name='user-project-stats'),
+    path('api/workers/worker-project-stats/', UserProjectStatsView.as_view(), name='worker-project-stats'),
+    path('api/warnings/', WarningFromUserCreateView.as_view(), name='warning-create'),
+    path('api/feedbacks/', FeedBackFromUserCreateView.as_view(), name='feedback-create'),
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/quaters/', QuaterListView.as_view(), name='quaters-list'),
