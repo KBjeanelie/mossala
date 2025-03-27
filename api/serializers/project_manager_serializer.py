@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from backend.models.project_manager import Project, ApplyProject, ProjectEvaluation, ProjectImage
+from authentication.serializer import UserSerializer
+from backend.models.project_manager import Project, ApplyProject, ProjectEvaluation, ProjectImage, ProjectMessage
 
 class ProjectImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,9 +34,46 @@ class ProjectSerializer(serializers.ModelSerializer):
         return project
 
 class ApplyProjectSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many=False, read_only=True)
     class Meta:
         model = ApplyProject
         fields = '__all__'
+        read_only_fields = ['application_date', 'user']
+    
+    def create(self, validated_data):
+        # Récupérer l'utilisateur depuis le contexte de la requête
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            validated_data['user'] = request.user
+
+        # Créer l'instance ApplyProject avec les données validées
+        return super().create(validated_data)
+    
+    def update(self, instance, validated_data):
+        # Récupérer l'utilisateur depuis le contexte de la requête
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            validated_data['user'] = request.user
+
+        # Mettre à jour l'instance ApplyProject avec les données validées
+        return super().update(instance, validated_data)
+    
+    def destroy(self, instance):
+        # Récupérer l'utilisateur depuis le contexte de la requête
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            if instance.user!= request.user:
+                raise serializers.ValidationError("Vous n'êtes pas autorisé à supprimer cette candidature.")
+
+        # Supprimer l'instance ApplyProject
+        return super().destroy(instance)
+    
+
+class ProjectMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectMessage
+        fields = ['id', 'project', 'sender', 'receiver', 'content', 'timestamp']
+        read_only_fields = ['sender', 'timestamp']
 
 class ProjectEvaluationSerializer(serializers.ModelSerializer):
     class Meta:

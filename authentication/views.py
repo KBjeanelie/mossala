@@ -104,6 +104,19 @@ class GetCurrentUserInfo(generics.RetrieveAPIView):
         return Response(self.serializer_class(user).data)
 
 
+class UpdateCurrentUserInfo(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+    
+    
+    def update(self, request, *args, **kwargs):
+        user = request.user
+        serializer = self.get_serializer(user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        user.save()
+        return Response(self.serializer_class(user).data)
+    
+
 class WorkerListView(generics.ListAPIView):
     serializer_class = WorkerSerializer
     permission_classes = [IsAuthenticated]
@@ -119,7 +132,3 @@ class WorkerDetailView(generics.RetrieveAPIView):
     serializer_class = WorkerSerializer
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
-
-class QuaterListView(generics.ListAPIView):
-    serializer_class = QuaterSerializer
-    queryset = Quater.objects.all()

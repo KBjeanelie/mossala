@@ -28,7 +28,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from api.views.app_report_view import FeedBackFromUserCreateView, WarningFromUserCreateView
 from api.views.user_manager_view import CurrentUserProjectStatsView
 from api.views.worker_view import UserProjectStatsView
-from authentication.views import CustomTokenObtainPairView, GetCurrentUserInfo, LogoutAPIView, QuaterListView, RegisterView, WorkerDetailView, WorkerListView
+from authentication.views import CustomTokenObtainPairView, GetCurrentUserInfo, LogoutAPIView, RegisterView, UpdateCurrentUserInfo, WorkerDetailView, WorkerListView
 from mossala import settings
 
 schema_view = get_schema_view(
@@ -54,8 +54,8 @@ urlpatterns = [
     path('api/feedbacks/', FeedBackFromUserCreateView.as_view(), name='feedback-create'),
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/quaters/', QuaterListView.as_view(), name='quaters-list'),
     path('api/user/current/', GetCurrentUserInfo.as_view(), name='current_user'),
+    path('api/update-current-user/', UpdateCurrentUserInfo.as_view(), name='update-current-user'),
     path('api/workers/', WorkerListView.as_view(), name='worker-list'),
     path('api/workers/<int:pk>/', WorkerDetailView.as_view(), name='worker-detail'),
     path('api/logout/', LogoutAPIView.as_view(), name='logout'),

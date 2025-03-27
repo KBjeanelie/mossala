@@ -53,6 +53,22 @@ class ApplyProject(models.Model):
         verbose_name_plural = 'Candidatures'
         ordering = ['-application_date']
 
+class ProjectMessage(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='messages', verbose_name='Projet')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages', verbose_name='Expéditeur')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages', verbose_name='Destinataire')
+    content = models.TextField(verbose_name='Contenu du message')
+    timestamp = models.DateTimeField(auto_now_add=True, verbose_name='Date et heure')
+
+    def __str__(self):
+        return f"Message de {self.sender} à {self.receiver} pour le projet {self.project.name}"
+
+    class Meta:
+        verbose_name = 'Message de projet'
+        verbose_name_plural = 'Messages de projets'
+        ordering = ['-timestamp']
+
+
 
 class ProjectEvaluation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='evaluations', verbose_name='Utilisateur')
