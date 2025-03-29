@@ -64,11 +64,12 @@ MIDDLEWARE = [
     # MIDDLEWARE PERSONNALISÉ
     #'backend.middlewares.redirect_url.RedirectIfNotAuthenticatedMiddleware',
     'backend.middlewares.request_logg.RequestLoggingMiddleware',
-    'backend.middlewares.sql_injection.SQLInjectionMiddleware'
+    'backend.middlewares.sql_injection.SQLInjectionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 AUTH_USER_MODEL = 'authentication.User'
-
+CORS_ALLOW_ALL_ORIGINS = True
 ROOT_URLCONF = 'mossala.urls'
 
 LOGIN_URL = '/api/login/'

@@ -150,20 +150,16 @@ class ProjectWithApplicationsView(APIView):
 
         # Récupérer toutes les candidatures associées au projet
         applications = ApplyProject.objects.filter(project=project)
+        project_serializer = ProjectSerializer(project, many=False)
         applications_serializer = ApplyProjectSerializer(applications, many=True)
 
         # Retourner les données du projet et des candidatures
+        print({
+            "project": project_serializer,
+            "applications": applications_serializer.data
+        })
         return Response({
-            "project": {
-                "id": project.id,
-                "name": project.name,
-                "description": project.description,
-                "amount": project.amount,
-                "adress": project.adress,
-                "owner": project.owner.username,
-                "is_closed": project.is_closed,
-                "created_at": project.created_at,
-            },
+            "project": project_serializer.data,
             "applications": applications_serializer.data
         })
 
